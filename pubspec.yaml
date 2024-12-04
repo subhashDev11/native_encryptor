@@ -1,6 +1,6 @@
 name: native_encryptor
 description: "Securely encrypt/decrypt data in your Flutter app using native code. Add random salt and IV for enhanced security. Easy-to-use API, cross-platform compatible."
-version: 1.0.2
+version: 1.0.3
 homepage: https://github.com/subhashDev11/native_encryptor
 
 environment:
@@ -12,13 +12,13 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  web: ^0.5.1
-  plugin_platform_interface: ^2.0.2
+  web: ^1.1.0
+  plugin_platform_interface: ^2.1.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
 
