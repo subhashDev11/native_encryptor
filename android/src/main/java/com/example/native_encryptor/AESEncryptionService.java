@@ -48,7 +48,7 @@ public class AESEncryptionService {
             cipher = Cipher.getInstance(CIPHER_ALGORITHM);
             setSaltLength(this.keySize / 4);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
         }
     }
 
@@ -59,7 +59,7 @@ public class AESEncryptionService {
             cipher = Cipher.getInstance(CIPHER_ALGORITHM);
             setSaltLength(this.keySize / 4);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
         }
     }
 
@@ -67,9 +67,13 @@ public class AESEncryptionService {
         try {
             SecretKey secretKey = generateKey(salt, passPhrase);
             byte[] encrypted = doFinal(Cipher.ENCRYPT_MODE, secretKey, iv, plainText.getBytes(StandardCharsets.UTF_8));
-            return dataType.equals(DataType.HEX) ? toHex(encrypted) : toBase64(encrypted);
+            if (encrypted != null) {
+                return dataType.equals(DataType.HEX) ? toHex(encrypted) : toBase64(encrypted);
+            }else {
+                return null;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -81,7 +85,7 @@ public class AESEncryptionService {
             String cipherText = encrypt(salt, iv, passPhrase, plainText);
             return salt + iv + cipherText;
         } catch (Exception e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -93,7 +97,7 @@ public class AESEncryptionService {
             byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, secretKey, iv, encryptedBytes);
             return new String(decrypted, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -105,7 +109,7 @@ public class AESEncryptionService {
             String cipherText = concatenatedCipherText.substring((keySize / 4) + (IV_SIZE / 4)); // Extract cipherText
             return decrypt(salt, iv, passPhrase, cipherText);
         } catch (Exception e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -116,7 +120,7 @@ public class AESEncryptionService {
             KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(), fromHex(salt), iterationCount, keySize);
             return new SecretKeySpec(secretKeyFactory.generateSecret(keySpec).getEncoded(), KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -152,7 +156,7 @@ public class AESEncryptionService {
             cipher.init(mode, secretKey, new IvParameterSpec(fromHex(iv)));
             return cipher.doFinal(bytes);
         } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
+            PlugInUtility.logError(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }

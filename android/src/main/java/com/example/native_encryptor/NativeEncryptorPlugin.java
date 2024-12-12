@@ -26,35 +26,41 @@ public class NativeEncryptorPlugin implements FlutterPlugin, MethodCallHandler {
     channel.setMethodCallHandler(this);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
-    }else if (call.method.equals("encrypt")) {
-      try {
-        HashMap<String, String> data = (HashMap<String, String>) call.arguments;
-        PlugInUtility.logInfo("Received params - "+data.toString());
-        String encryptedValue = onEncryptMethodCall(Objects.requireNonNull(data.get("passPhrase")), Objects.requireNonNull(data.get("contentToEncrypt")));
-        PlugInUtility.logInfo("Encrypted data - "+encryptedValue);
-        result.success(encryptedValue);
-      } catch (Exception e) {
-        PlugInUtility.logError("Error on encryption - "+e.getMessage(),e.fillInStackTrace());
-        result.error("",e.getMessage(),e.getLocalizedMessage());
+      switch (call.method) {
+          case "getPlatformVersion":
+              result.success("Android " + android.os.Build.VERSION.RELEASE);
+              break;
+          case "encrypt":
+              try {
+                  HashMap<String, String> data = (HashMap<String, String>) call.arguments;
+                  PlugInUtility.logInfo("Received params - " + data.toString());
+                  String encryptedValue = onEncryptMethodCall(Objects.requireNonNull(data.get("passPhrase")), Objects.requireNonNull(data.get("contentToEncrypt")));
+                  PlugInUtility.logInfo("Encrypted data - " + encryptedValue);
+                  result.success(encryptedValue);
+              } catch (Exception e) {
+                  PlugInUtility.logError("Error on encryption - " + e.getMessage(), e.fillInStackTrace());
+                  result.error("", e.getMessage(), e.getLocalizedMessage());
+              }
+              break;
+          case "decrypt":
+              try {
+                  HashMap<String, String> data = (HashMap<String, String>) call.arguments;
+                  PlugInUtility.logInfo("Received params - " + data.toString());
+                  String decryptedValue = onDecryptMethodCall(Objects.requireNonNull(data.get("passPhrase")), Objects.requireNonNull(data.get("concatenatedCipherText")));
+                  PlugInUtility.logInfo("Decrypted data - " + decryptedValue);
+                  result.success(decryptedValue);
+              } catch (Exception e) {
+                  PlugInUtility.logError("Error on decryption - " + e.getMessage(), e.fillInStackTrace());
+                  result.error("", e.getMessage(), e.getLocalizedMessage());
+              }
+              break;
+          default:
+              result.notImplemented();
+              break;
       }
-    }else if (call.method.equals("decrypt")) {
-      try {
-        HashMap<String, String> data = (HashMap<String, String>) call.arguments;
-        PlugInUtility.logInfo("Received params - "+data.toString());
-        String decryptedValue = onDecryptMethodCall(Objects.requireNonNull(data.get("passPhrase")), Objects.requireNonNull(data.get("concatenatedCipherText")));
-        PlugInUtility.logInfo("Decrypted data - "+decryptedValue);
-        result.success(decryptedValue);
-      } catch (Exception e) {
-        PlugInUtility.logError("Error on decryption - "+e.getMessage(),e.fillInStackTrace());
-        result.error("",e.getMessage(),e.getLocalizedMessage());
-      }
-    } else {
-      result.notImplemented();
-    }
   }
 
   String onEncryptMethodCall(@NonNull String passPhrase, @NonNull String content){
