@@ -128,10 +128,6 @@ This plugin is licensed under the MIT License.
 
 We welcome contributions! Please feel free to open issues or submit pull requests.
 
-### About Me
-
-Hi there! I'm Subhash (you can also call me SubhashDev11). I'm a passionate developer with a strong interest in [mention your area of expertise - web development, mobile development, data science etc.]. I'm constantly striving to learn new technologies and build innovative solutions.
-
 **Connect with me:**
 
 * **GitHub:** https://github.com/subhashDev11
