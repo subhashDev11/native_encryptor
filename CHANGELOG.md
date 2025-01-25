@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.0.4] - 2024-12-02
+### Update
+- Meta data update.
+
 ## [1.0.3] - 2024-12-02
 ### Update
 - Updated package dependencies to the latest versions.

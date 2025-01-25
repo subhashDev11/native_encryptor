@@ -1,6 +1,6 @@
 name: native_encryptor
 description: "Securely encrypt/decrypt data in your Flutter app using native code. Add random salt and IV for enhanced security. Easy-to-use API, cross-platform compatible."
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/subhashDev11/native_encryptor
 
 environment:
@@ -31,9 +31,6 @@ flutter:
         pluginClass: NativeEncryptorPlugin
       macos:
         pluginClass: NativeEncryptorPlugin
-#      web:
-#        pluginClass: NativeEncryptorWeb
-#        fileName: native_encryptor_web.dart
 
 screenshots:
   - description: 'This is shows the encrypted result.'
