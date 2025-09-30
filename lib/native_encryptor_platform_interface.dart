@@ -27,10 +27,27 @@ abstract class NativeEncryptorPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  Future<String?> encrypt({required String passPhrase, required String contentToEncrypt}) {
+  Future<String?> encrypt(
+      {required String passPhrase, required String contentToEncrypt}) {
     throw UnimplementedError('encrypt() has not been implemented.');
   }
-  Future<String?> decrypt({required String passPhrase, required String concatenatedCipherText}) {
+
+  Future<String?> decrypt(
+      {required String passPhrase, required String concatenatedCipherText}) {
+    throw UnimplementedError('encrypt() has not been implemented.');
+  }
+
+  Future<String?> encryptWithCustomIV(
+      {required String passPhrase,
+      required String iv,
+      required String contentToEncrypt}) {
+    throw UnimplementedError('encrypt() has not been implemented.');
+  }
+
+  Future<String?> decryptWithCustomIV(
+      {required String passPhrase,
+      required String iv,
+      required String concatenatedCipherText}) {
     throw UnimplementedError('encrypt() has not been implemented.');
   }
 }

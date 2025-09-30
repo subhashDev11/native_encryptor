@@ -1,7 +1,6 @@
 package com.example.native_encryptor;
 
 import static android.util.Base64.*;
-
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -9,8 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-//import java.util.Base64;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -37,7 +34,6 @@ public class AESEncryptionService {
 
     private int iterationCount = 1989;
     private int keySize = 256;
-    private int saltLength;
 
     private final DataType dataType = DataType.BASE64;
 
@@ -48,7 +44,8 @@ public class AESEncryptionService {
             cipher = Cipher.getInstance(CIPHER_ALGORITHM);
             setSaltLength(this.keySize / 4);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
         }
     }
 
@@ -59,7 +56,8 @@ public class AESEncryptionService {
             cipher = Cipher.getInstance(CIPHER_ALGORITHM);
             setSaltLength(this.keySize / 4);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
         }
     }
 
@@ -67,9 +65,15 @@ public class AESEncryptionService {
         try {
             SecretKey secretKey = generateKey(salt, passPhrase);
             byte[] encrypted = doFinal(Cipher.ENCRYPT_MODE, secretKey, iv, plainText.getBytes(StandardCharsets.UTF_8));
-            return dataType.equals(DataType.HEX) ? toHex(encrypted) : toBase64(encrypted);
+            if (dataType.equals(DataType.HEX)) {
+                assert encrypted != null;
+                return toHex(encrypted);
+            } else {
+                return toBase64(encrypted);
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
             return null;
         }
     }
@@ -81,19 +85,8 @@ public class AESEncryptionService {
             String cipherText = encrypt(salt, iv, passPhrase, plainText);
             return salt + iv + cipherText;
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public String decrypt(String salt, String iv, String passPhrase, String cipherText) {
-        try {
-            SecretKey secretKey = generateKey(salt, passPhrase);
-            byte[] encryptedBytes = dataType.equals(DataType.HEX) ? fromHex(cipherText) : fromBase64(cipherText);
-            byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, secretKey, iv, encryptedBytes);
-            return new String(decrypted, StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
             return null;
         }
     }
@@ -105,7 +98,21 @@ public class AESEncryptionService {
             String cipherText = concatenatedCipherText.substring((keySize / 4) + (IV_SIZE / 4)); // Extract cipherText
             return decrypt(salt, iv, passPhrase, cipherText);
         } catch (Exception e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
+            return null;
+        }
+    }
+
+    public String decrypt(String salt, String iv, String passPhrase, String cipherText) {
+        try {
+            SecretKey secretKey = generateKey(salt, passPhrase);
+            byte[] encryptedBytes = dataType.equals(DataType.HEX) ? fromHex(cipherText) : fromBase64(cipherText);
+            byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, secretKey, iv, encryptedBytes);
+            return new String(decrypted, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
             return null;
         }
     }
@@ -116,7 +123,8 @@ public class AESEncryptionService {
             KeySpec keySpec = new PBEKeySpec(passPhrase.toCharArray(), fromHex(salt), iterationCount, keySize);
             return new SecretKeySpec(secretKeyFactory.generateSecret(keySpec).getEncoded(), KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            e.printStackTrace();
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
             return null;
         }
     }
@@ -151,8 +159,10 @@ public class AESEncryptionService {
         try {
             cipher.init(mode, secretKey, new IvParameterSpec(fromHex(iv)));
             return cipher.doFinal(bytes);
-        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
-            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException |
+                 BadPaddingException | InvalidKeyException e) {
+            e.fillInStackTrace();
+            PlugInUtility.logError(e.getMessage(), e.fillInStackTrace());
             return null;
         }
     }
@@ -164,11 +174,6 @@ public class AESEncryptionService {
         return randomBytes;
     }
 
-    public int getSaltLength() {
-        return saltLength;
-    }
-
     public void setSaltLength(int saltLength) {
-        this.saltLength = saltLength;
     }
 }

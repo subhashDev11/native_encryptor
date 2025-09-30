@@ -1,6 +1,6 @@
-# native_encryptor_example
+# example
 
-Demonstrates how to use the native_encryptor plugin.
+A new Flutter project.
 
 ## Getting Started
 

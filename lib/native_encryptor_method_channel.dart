@@ -14,12 +14,14 @@ class MethodChannelNativeEncryptor extends NativeEncryptorPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 
   @override
-  Future<String?> encrypt({required String passPhrase, required String contentToEncrypt}) async {
+  Future<String?> encrypt(
+      {required String passPhrase, required String contentToEncrypt}) async {
     try {
       final String? response = await methodChannel.invokeMethod('encrypt', {
         "passPhrase": passPhrase,
@@ -34,7 +36,9 @@ class MethodChannelNativeEncryptor extends NativeEncryptorPlatform {
   }
 
   @override
-  Future<String?> decrypt({required String passPhrase, required String concatenatedCipherText}) async {
+  Future<String?> decrypt(
+      {required String passPhrase,
+      required String concatenatedCipherText}) async {
     try {
       String? response = await methodChannel.invokeMethod('decrypt', {
         "passPhrase": passPhrase,
@@ -50,13 +54,15 @@ class MethodChannelNativeEncryptor extends NativeEncryptorPlatform {
       return null;
     }
   }
-  String? base64ToString(String base64String){
-    try{
-     return utf8.decode(base64.decode(base64String));
-    }catch(e){
+
+  String? base64ToString(String base64String) {
+    try {
+      return utf8.decode(base64.decode(base64String));
+    } catch (e) {
       return null;
     }
   }
+
   bool isBase64(String str) {
     try {
       // Try to decode the string and check if it produces valid UTF-8
@@ -64,6 +70,49 @@ class MethodChannelNativeEncryptor extends NativeEncryptorPlatform {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  Future<String?> decryptWithCustomIV(
+      {required String passPhrase,
+      required String iv,
+      required String concatenatedCipherText}) async {
+    // TODO: implement decryptWithCustomIV
+    //decrypt_with_custom_iv
+    try {
+      String? response = await methodChannel.invokeMethod('decrypt_with_custom_iv', {
+        "passPhrase": passPhrase,
+        "concatenatedCipherText": concatenatedCipherText,
+        "iv": iv,
+      });
+      if (response != null && isBase64(response)) {
+        log("Received custom iv decrypted value - $response");
+        response = base64ToString(response);
+      }
+      return response; // Res
+    } catch (e) {
+      log("Error on decrypt: $e");
+      return null;
+    }
+  }
+
+  @override
+  Future<String?> encryptWithCustomIV(
+      {required String passPhrase,
+      required String iv,
+      required String contentToEncrypt}) async {
+    try {
+      final String? response = await methodChannel.invokeMethod('encrypt_with_custom_iv', {
+        "passPhrase": passPhrase,
+        "contentToEncrypt": contentToEncrypt,
+        "iv": iv,
+      });
+      log("Received custom iv encrypted value - $response");
+      return response; // Response from native
+    } catch (e) {
+      log("Error on encrypt with custom iv: $e");
+      return null;
     }
   }
 }

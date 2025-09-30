@@ -22,6 +22,18 @@ class MockNativeEncryptorPlatform
     // TODO: implement encrypt
     throw UnimplementedError();
   }
+
+  @override
+  Future<String?> decryptWithCustomIV({required String passPhrase, required String iv, required String concatenatedCipherText}) {
+    // TODO: implement decryptWithCustomIV
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> encryptWithCustomIV({required String passPhrase, required String iv, required String contentToEncrypt}) {
+    // TODO: implement encryptWithCustomIV
+    throw UnimplementedError();
+  }
 }
 
 void main() {
